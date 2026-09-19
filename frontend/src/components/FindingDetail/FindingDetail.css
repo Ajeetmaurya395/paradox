@@ -1,0 +1,98 @@
+.finding-detail-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--space-xl);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.finding-detail {
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  padding: var(--space-xl);
+  animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.detail-close {
+  position: absolute;
+  top: var(--space-lg);
+  right: var(--space-lg);
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.detail-close:hover {
+  color: var(--text-primary);
+}
+
+.detail-header {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.detail-title {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: var(--space-xl);
+}
+
+.detail-section {
+  margin-bottom: var(--space-xl);
+}
+
+.detail-section h3 {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 4px;
+}
+
+.detail-section p {
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+.evidence-block {
+  background: var(--bg-tertiary);
+  padding: var(--space-md);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  font-size: 0.85rem;
+  color: var(--accent-cyan);
+  border: 1px solid var(--border-color);
+}
+
+.fix-suggestion pre {
+  background: var(--bg-tertiary);
+  padding: var(--space-md);
+  border-radius: var(--radius-sm);
+  margin: var(--space-sm) 0;
+  border: 1px solid var(--border-color);
+  overflow-x: auto;
+}
+
+.fix-suggestion code {
+  color: var(--accent-amber);
+  font-size: 0.9em;
+}
+
+.fix-suggestion strong {
+  color: var(--success);
+}

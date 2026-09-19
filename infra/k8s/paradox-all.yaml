@@ -1,0 +1,198 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: paradox
+  labels:
+    app: paradox
+    managed-by: eks-distro
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: paradox-config
+  namespace: paradox
+data:
+  opensearch-url: "http://paradox-opensearch:9200"
+  ollama-url: "http://ollama-svc:11434"
+  cors-origins: "*"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paradox-backend
+  namespace: paradox
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: paradox-backend
+  template:
+    metadata:
+      labels:
+        app: paradox-backend
+    spec:
+      containers:
+        - name: backend
+          image: paradox-backend:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: OPENSEARCH_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: paradox-config
+                  key: opensearch-url
+            - name: OLLAMA_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: paradox-config
+                  key: ollama-url
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paradox-backend-svc
+  namespace: paradox
+spec:
+  selector:
+    app: paradox-backend
+  ports:
+    - port: 8000
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: paradox-opensearch
+  namespace: paradox
+spec:
+  serviceName: opensearch
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paradox-opensearch
+  template:
+    metadata:
+      labels:
+        app: paradox-opensearch
+    spec:
+      containers:
+        - name: opensearch
+          image: opensearchproject/opensearch:2.17.0
+          ports:
+            - containerPort: 9200
+          env:
+            - name: cluster.name
+              value: paradox-cluster
+            - name: discovery.type
+              value: single-node
+            - name: plugins.security.disabled
+              value: "true"
+            - name: OPENSEARCH_JAVA_OPTS
+              value: "-Xms512m -Xmx512m"
+          volumeMounts:
+            - name: opensearch-data
+              mountPath: /usr/share/opensearch/data
+  volumeClaimTemplates:
+    - metadata:
+        name: opensearch-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paradox-opensearch
+  namespace: paradox
+spec:
+  selector:
+    app: paradox-opensearch
+  ports:
+    - port: 9200
+      targetPort: 9200
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paradox-frontend
+  namespace: paradox
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: paradox-frontend
+  template:
+    metadata:
+      labels:
+        app: paradox-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: paradox-frontend:latest
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paradox-frontend-svc
+  namespace: paradox
+spec:
+  selector:
+    app: paradox-frontend
+  ports:
+    - port: 80
+      targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: paradox-ingress
+  namespace: paradox
+  annotations:
+    nginx.ingress.kubernetes.io/websocket-services: "paradox-backend-svc"
+spec:
+  rules:
+    - host: paradox.local
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: paradox-backend-svc
+                port:
+                  number: 8000
+          - path: /ws
+            pathType: Prefix
+            backend:
+              service:
+                name: paradox-backend-svc
+                port:
+                  number: 8000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: paradox-frontend-svc
+                port:
+                  number: 80

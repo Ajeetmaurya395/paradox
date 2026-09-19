@@ -1,0 +1,13 @@
+strands-agents
+strands-agents-tools
+opensearch-py
+cedarpy
+fastapi
+uvicorn[standard]
+websockets
+httpx
+beautifulsoup4
+lxml
+python-dotenv
+uuid6
+pydantic

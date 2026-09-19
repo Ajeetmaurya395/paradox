@@ -1,0 +1,209 @@
+.results-page {
+  padding: var(--space-lg);
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-height: calc(100vh - 60px);
+}
+
+.results-loading, .results-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 60px);
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  gap: var(--space-sm);
+}
+
+.results-error {
+  color: var(--danger);
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-lg);
+  animation: slideDown 0.4s ease-out;
+}
+
+.results-title {
+  font-size: 2rem;
+  margin-bottom: 4px;
+}
+
+.results-target {
+  font-family: var(--font-mono);
+  color: var(--accent-cyan);
+  font-size: 1.1rem;
+  margin-bottom: var(--space-sm);
+}
+
+.results-meta {
+  display: flex;
+  gap: var(--space-lg);
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+}
+
+.results-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.partyrock-btn {
+  background: linear-gradient(135deg, #ff9900, #ff5500);
+  box-shadow: 0 0 20px rgba(255, 153, 0, 0.2);
+}
+.partyrock-btn:hover {
+  box-shadow: 0 0 30px rgba(255, 153, 0, 0.4);
+}
+
+.results-content {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: var(--space-md);
+  flex: 1;
+  animation: fadeIn 0.6s ease-out;
+}
+
+.results-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.section-title {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-lg);
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 8px;
+}
+
+.score-overview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-lg);
+}
+
+.sub-scores {
+  width: 100%;
+  margin-top: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.sub-score {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+}
+
+.text-cyan { color: var(--accent-cyan); }
+.text-purple { color: var(--accent-purple); }
+.text-amber { color: var(--accent-amber); }
+
+.findings-summary {
+  padding: var(--space-lg);
+}
+
+.severity-bar-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.sev-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.sev-label {
+  width: 60px;
+  font-size: 0.75rem;
+  text-transform: capitalize;
+  color: var(--text-secondary);
+}
+
+.sev-bar-container {
+  flex: 1;
+  height: 8px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.sev-bar {
+  height: 100%;
+  border-radius: 4px;
+}
+.sev-critical { background: var(--danger); }
+.sev-high { background: #f97316; }
+.sev-medium { background: var(--warning); }
+.sev-low { background: var(--info); }
+.sev-info { background: var(--text-tertiary); }
+
+.sev-count {
+  width: 30px;
+  text-align: right;
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+}
+
+.compliance-summary {
+  padding: var(--space-lg);
+  text-align: center;
+}
+
+.comp-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid var(--success);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-md);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+.comp-value { font-size: 1.75rem; font-weight: 800; color: var(--success); }
+.comp-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-tertiary); }
+.comp-desc { font-size: 0.85rem; color: var(--text-secondary); }
+
+.results-main {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.results-tab-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-md);
+}
+
+.results-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-tertiary);
+  text-align: center;
+}

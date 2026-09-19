@@ -1,0 +1,43 @@
+# Finch Compose — Paradox Infrastructure
+# Use: finch compose -f infra/finch-compose.yml up -d
+# Or:  docker compose -f infra/finch-compose.yml up -d
+
+services:
+  opensearch:
+    image: opensearchproject/opensearch:2.17.0
+    container_name: paradox-opensearch
+    environment:
+      - cluster.name=paradox-cluster
+      - node.name=paradox-node
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - plugins.security.disabled=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  localstack:
+    image: localstack/localstack:latest
+    container_name: paradox-localstack
+    environment:
+      - SERVICES=lambda,apigateway,s3,sqs
+      - DEFAULT_REGION=us-east-1
+    ports:
+      - "4566:4566"
+    volumes:
+      - localstack-data:/var/lib/localstack
+
+volumes:
+  opensearch-data:
+  localstack-data:
