@@ -1,0 +1,34 @@
+# OpenSearch on Amazon Corretto 21
+# This Containerfile builds a custom OpenSearch image using Amazon Corretto as the JDK
+
+FROM amazoncorretto:21 AS base
+
+ENV OPENSEARCH_VERSION=2.17.0
+ENV OPENSEARCH_HOME=/usr/share/opensearch
+ENV JAVA_HOME=/usr/lib/jvm/java-21-amazon-corretto
+
+RUN yum install -y wget tar gzip shadow-utils curl && \
+    groupadd -g 1000 opensearch && \
+    useradd -u 1000 -g opensearch -d ${OPENSEARCH_HOME} opensearch
+
+RUN wget -q https://artifacts.opensearch.org/releases/bundle/opensearch/${OPENSEARCH_VERSION}/opensearch-${OPENSEARCH_VERSION}-linux-x64.tar.gz && \
+    tar -xzf opensearch-${OPENSEARCH_VERSION}-linux-x64.tar.gz && \
+    mkdir -p ${OPENSEARCH_HOME} && \
+    cp -r opensearch-${OPENSEARCH_VERSION}/* ${OPENSEARCH_HOME}/ && \
+    rm -rf opensearch-${OPENSEARCH_VERSION}* && \
+    rm -rf ${OPENSEARCH_HOME}/jdk && \
+    chown -R opensearch:opensearch ${OPENSEARCH_HOME}
+
+USER opensearch
+WORKDIR ${OPENSEARCH_HOME}
+
+# Disable security plugin for local development
+RUN echo "plugins.security.disabled: true" >> config/opensearch.yml && \
+    echo "discovery.type: single-node" >> config/opensearch.yml
+
+EXPOSE 9200 9300
+
+HEALTHCHECK --interval=10s --timeout=5s --retries=10 \
+    CMD curl -s http://localhost:9200/_cluster/health || exit 1
+
+CMD ["./bin/opensearch"]

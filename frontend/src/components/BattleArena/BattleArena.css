@@ -1,0 +1,144 @@
+.battle-arena {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.arena-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.arena-title { font-weight: 600; font-size: 0.9rem; }
+
+.arena-scores {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.score-attacker { color: var(--danger); }
+.score-separator { color: var(--text-tertiary); font-size: 0.7rem; }
+.score-defender { color: var(--accent-cyan); }
+
+.arena-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.arena-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-tertiary);
+  gap: var(--space-sm);
+}
+
+.arena-waiting {
+  font-size: 2rem;
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+/* ─── Battle Round ──────────────────────────────────────── */
+.battle-round {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  animation: slideUp 0.4s ease-out both;
+}
+
+.round-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  font-size: 0.75rem;
+}
+
+.round-number {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+}
+
+.round-category {
+  flex: 1;
+  color: var(--text-tertiary);
+}
+
+.round-battle {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0;
+}
+
+.battle-side {
+  padding: 10px 12px;
+}
+
+.attacker-side {
+  border-right: 1px solid var(--border-color);
+  background: rgba(239, 68, 68, 0.03);
+}
+
+.defender-side {
+  background: rgba(0, 212, 255, 0.03);
+}
+
+.side-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.attacker-side .side-label { color: var(--danger); }
+.defender-side .side-label { color: var(--accent-cyan); }
+
+.side-message {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.battle-vs {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--text-tertiary);
+  background: var(--bg-primary);
+}
+
+/* ─── Score Bar ─────────────────────────────────────────── */
+.arena-score-bar {
+  display: flex;
+  height: 4px;
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  transition: width 0.5s ease-out;
+}
+
+.attacker-fill { background: var(--danger); }
+.defender-fill { background: var(--accent-cyan); }

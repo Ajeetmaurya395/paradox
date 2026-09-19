@@ -1,0 +1,51 @@
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: Cluster
+metadata:
+  name: paradox-cluster
+spec:
+  clusterNetwork:
+    cniConfig:
+      cilium: {}
+    pods:
+      cidrBlocks:
+        - 192.168.0.0/16
+    services:
+      cidrBlocks:
+        - 10.96.0.0/12
+  controlPlaneConfiguration:
+    count: 1
+    endpoint:
+      host: "paradox-cp.local"
+    machineGroupRef:
+      kind: DockerMachineConfig
+      name: paradox-cp
+  datacenterRef:
+    kind: DockerDatacenterConfig
+    name: paradox-dc
+  kubernetesVersion: "1.28"
+  managementCluster:
+    name: paradox-cluster
+  workerNodeGroupConfigurations:
+    - count: 2
+      machineGroupRef:
+        kind: DockerMachineConfig
+        name: paradox-workers
+      name: workers
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: DockerDatacenterConfig
+metadata:
+  name: paradox-dc
+spec: {}
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: DockerMachineConfig
+metadata:
+  name: paradox-cp
+spec: {}
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: DockerMachineConfig
+metadata:
+  name: paradox-workers
+spec: {}

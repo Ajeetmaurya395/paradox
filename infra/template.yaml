@@ -1,0 +1,86 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Paradox — AI-Powered Security Platform (Serverless Deployment)
+
+Globals:
+  Function:
+    Timeout: 300
+    MemorySize: 512
+    Runtime: python3.11
+    Environment:
+      Variables:
+        OPENSEARCH_URL: !Ref OpenSearchUrl
+        OLLAMA_URL: !Ref OllamaUrl
+
+Parameters:
+  OpenSearchUrl:
+    Type: String
+    Default: http://localhost:9200
+  OllamaUrl:
+    Type: String
+    Default: http://localhost:11434
+
+Resources:
+  ParadoxApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: dev
+      Cors:
+        AllowOrigin: "'*'"
+        AllowMethods: "'GET,POST,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type'"
+
+  StartScanFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handlers.start_scan
+      CodeUri: ../backend/
+      Events:
+        StartScan:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ParadoxApi
+            Path: /api/scan
+            Method: post
+
+  GetScansFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handlers.get_scans
+      CodeUri: ../backend/
+      Events:
+        GetScans:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ParadoxApi
+            Path: /api/scans
+            Method: get
+
+  GetScanByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handlers.get_scan_by_id
+      CodeUri: ../backend/
+      Events:
+        GetScan:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ParadoxApi
+            Path: /api/scans/{id}
+            Method: get
+
+  ScanReportBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: paradox-scan-reports
+
+  ScanJobQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: paradox-scan-jobs
+      VisibilityTimeout: 300
+
+Outputs:
+  ApiEndpoint:
+    Description: Paradox API Gateway endpoint
+    Value: !Sub "https://${ParadoxApi}.execute-api.${AWS::Region}.amazonaws.com/dev"
